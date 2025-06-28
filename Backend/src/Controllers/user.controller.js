@@ -127,7 +127,7 @@ const acceptFriendRequest=Asynchandler(async(req,res)=>{
         }
 
         //!verify that current user is recipient
-        if(friendRequest.recipient.toString !== myId.toString()){
+        if(friendRequest.recipient.toString() !== myId.toString()){
             throw new ApiError(401,"Unauthorized - you are not able to accept friend request")
         }
 
@@ -136,7 +136,7 @@ const acceptFriendRequest=Asynchandler(async(req,res)=>{
         friendRequest.save({validateBeforeSave:false});
 
         //!once you accept the friend request then both of you become a friend
-        //!then add each other id to friend array
+        //!then add each other id in friend array
         await User.findByIdAndUpdate(
             friendRequest.sender,
             {
@@ -183,7 +183,7 @@ const getFriendRequest=Asynchandler(async(req,res)=>{
 
         return res.status(200)
         .json(
-            new Apiresponse(200,{incommingRequest,acceptFriendRequest},"notification fetched successfuly")
+            new Apiresponse(200,{incommingRequest,acceptedRequest},"notification fetched successfuly")
         )
     } catch (error) {
         console.log("Error :: getFriendRequest :: ",error);
@@ -191,7 +191,7 @@ const getFriendRequest=Asynchandler(async(req,res)=>{
     }
 })
 
-const getOntgoingFriendRequest=Asynchandler(async(req,res)=>{
+const getOutgoingFriendRequest=Asynchandler(async(req,res)=>{
     try {
         const getOutgoing=await FriendReq.find({
             sender:req.user?._id,
@@ -213,5 +213,5 @@ export{
     sendFriendRequest,
     acceptFriendRequest,
     getFriendRequest,
-    getOntgoingFriendRequest
+    getOutgoingFriendRequest
 }

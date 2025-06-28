@@ -20,3 +20,4 @@ const genStreamToken=Asynchandler(async(req,res)=>{
         throw new ApiError(500,"Internal server in getStreamToken")
     }
 })
+export {genStreamToken}

@@ -25,7 +25,7 @@ const registerUser=Asynchandler(async(req,res)=>{
     try {
         const {email,fullname,password}=req.body;
 
-        if([email.fullname,password].map((curr)=>curr?.trim==="")){
+        if([email.fullname,password].some((curr)=>curr?.trim==="")){
             throw new ApiError(400,"All Fields are required");
         }
 
@@ -95,7 +95,7 @@ const login=Asynchandler(async(req,res)=>{
             throw new ApiError(400,"Invalid email formate");
         }
 
-        const user=User.findOne({email});
+        const user=User.findOne({email}).select("-password -refreshToken");
         if(!user){
             throw new ApiError(400,"email is incorrect");
         }
@@ -107,11 +107,11 @@ const login=Asynchandler(async(req,res)=>{
 
         const {accessToken,refreshToken}=generateAccessAndRefreshToken(user._id);
 
-        const loginuser=await User.findById(user._id).select("-password -refreshToken")
+        // const loginuser=await User.findById(user._id).select("-password -refreshToken")
 
-        if(!loginuser){
-            throw new ApiError(500,"Database error try sometimes latter")
-        }
+        // if(!loginuser){
+        //     throw new ApiError(500,"Database error try sometimes latter")
+        // }
         const option={
             httpOnly:true,
             secure:true,
@@ -124,7 +124,7 @@ const login=Asynchandler(async(req,res)=>{
         .json(
             new Apiresponse(
                 200,
-                {user:loginuser,accessToken,refreshToken,},
+                {user:user,accessToken,refreshToken,},
                 "User login successfuly"
             )
         )
@@ -244,7 +244,7 @@ const getCurrentUser=Asynchandler(async(req,res)=>{
         .json(
             new Apiresponse(
                 200,
-                req.user,
+                req?.user,
                 "Current User Fetched successfuly"
             )
         )
@@ -253,3 +253,11 @@ const getCurrentUser=Asynchandler(async(req,res)=>{
         throw new ApiError(500,"Internal server in getcurrent user")
     }
 })
+
+export {
+    registerUser,
+    login,
+    logout,
+    onboard,
+    getCurrentUser
+}
