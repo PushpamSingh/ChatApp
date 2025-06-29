@@ -16,8 +16,9 @@ const genStreamToken=Asynchandler(async(req,res)=>{
             new Apiresponse(200,token,"Stream token fetched successfuly")
         )
     } catch (error) {
-        console.log("Error :: getStreamToken :: ",error);
-        throw new ApiError(500,"Internal server in getStreamToken")
+        res.status(500).json({
+            message:`${error.message}`
+        })
     }
 })
 export {genStreamToken}

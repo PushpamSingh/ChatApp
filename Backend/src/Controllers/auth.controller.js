@@ -15,6 +15,8 @@ const generateAccessAndRefreshToken=async(userId)=>{
         const refreshToken=user.generateRefreshToken();
         user.refreshToken=refreshToken;
         await user.save({validateBeforeSave:false})
+        // console.log("accesstoken, refreshToken: ",accessToken,refreshToken);
+        
         return {accessToken,refreshToken}
     } catch (error) {
         console.log("Error :: generatetoken :: ",error);
@@ -77,8 +79,9 @@ const registerUser=Asynchandler(async(req,res)=>{
         )
 
     } catch (error) {
-        console.log("Error :: registerUser :: ",error);
-        throw new ApiError(500,"Internal server in register user")
+         res.status(500).json({
+            message:`${error.message}`
+        })
     }
 })
 
@@ -95,17 +98,19 @@ const login=Asynchandler(async(req,res)=>{
             throw new ApiError(400,"Invalid email formate");
         }
 
-        const user=User.findOne({email}).select("-password -refreshToken");
+        const user=await User.findOne({email})
         if(!user){
             throw new ApiError(400,"email is incorrect");
         }
 
-        const isPasswordmatch=user.ComparePassword(password);
+        
+        const isPasswordmatch=await user.comparePassword(password);
+        // console.log("Email and password: ",email,password);
         if(!isPasswordmatch){
             throw new ApiError(400,"Password is incorrect");
         }
 
-        const {accessToken,refreshToken}=generateAccessAndRefreshToken(user._id);
+        const {accessToken,refreshToken}=await generateAccessAndRefreshToken(user._id);
 
         // const loginuser=await User.findById(user._id).select("-password -refreshToken")
 
@@ -129,8 +134,9 @@ const login=Asynchandler(async(req,res)=>{
             )
         )
     } catch (error) {
-        console.log("Error :: loginUser :: ",error);
-        throw new ApiError(500,"Internal server in logIn user")
+        res.status(500).json({
+            message:`${error.message}`
+        })
     }
 })
 
@@ -167,8 +173,9 @@ const logout=Asynchandler(async(req,res)=>{
             )
         )
     } catch (error) {
-        console.log("Error :: logoutuser :: ",error);
-        throw new ApiError(500,"Internal server in logout user")
+       res.status(500).json({
+            message:`${error.message}`
+        })
     }
 })
 
@@ -177,6 +184,8 @@ const onboard=Asynchandler(async(req,res)=>{
         const{fullname,bio,nativeLanguage,learningLanguage,location}=req.body;
         const userId=req.user?._id;
 
+        // console.log("data",fullname);
+        
         if(!isValidObjectId(userId)){
             throw new ApiError(401,"Invalid userId")
         }
@@ -198,7 +207,8 @@ const onboard=Asynchandler(async(req,res)=>{
         const updatedUser=await User.findByIdAndUpdate(
             userId,
             {
-                ...req.body
+                ...req.body,
+                isOnboarded:true
             },
             {
                 new:true
@@ -216,7 +226,7 @@ const onboard=Asynchandler(async(req,res)=>{
                 name:updatedUser.fullname.toString(),
                 image:updatedUser.profilePic.toString() || ""
             })
-            console.log(`new Stream user updated ${newUser.fullname}`);
+            console.log(`new Stream user updated ${updatedUser.fullname}`);
         } catch (error) {
             console.log("Error in updating stream user: ",error);
             throw error;
@@ -227,8 +237,11 @@ const onboard=Asynchandler(async(req,res)=>{
             new Apiresponse(200,updatedUser,"User updated successfuly")
         )
     } catch (error) {
-        console.log("Error :: onboarduser :: ",error);
-        throw new ApiError(500,"Internal server in onboard user")
+        console.log(error);
+        
+         res.status(500).json({
+            message:`${error.message}`
+        })
     }
 })
 
@@ -249,8 +262,9 @@ const getCurrentUser=Asynchandler(async(req,res)=>{
             )
         )
     } catch (error) {
-        console.log("Error :: getcurrentuser :: ",error);
-        throw new ApiError(500,"Internal server in getcurrent user")
+        res.status(500).json({
+            message:`${error.message}`
+        })
     }
 })
 

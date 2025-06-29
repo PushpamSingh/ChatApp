@@ -72,17 +72,17 @@ userSchema.pre('save',async function(next){
         }
 })
 
-userSchema.methods.ComparePassword=async function(userpassword){
+userSchema.methods.comparePassword=async function(userpassword){
     try {
-        const ismatch=await bcrypt.compare(userpassword)
-        return ismatch
+        const ismatch=await bcrypt.compare(userpassword,this.password)
+        return ismatch;
     } catch (error) {
         throw error
     }
 }
 
-userSchema.methods.generateAccessToken=async function() {
-    await jwt.sign(
+userSchema.methods.generateAccessToken= function() {
+    return jwt.sign(
         {
             _id:this._id,
             fullname:this.fullname
@@ -94,8 +94,8 @@ userSchema.methods.generateAccessToken=async function() {
     )
 }
 
-userSchema.methods.generateRefreshToken=async function() {
-    await jwt.sign(
+userSchema.methods.generateRefreshToken= function() {
+    return jwt.sign(
         {
             _id:this._id
         },

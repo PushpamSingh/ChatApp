@@ -27,8 +27,9 @@ const getRecommendedUsers=Asynchandler(async(req,res)=>{
         )
 
     } catch (error) {
-        console.log("Error :: getRecommendedUsers :: ",error);
-        throw new ApiError(500,"Internal server in getRecommendedUsers")
+         res.status(500).json({
+            message:`${error.message}`
+        })
     }
 })
 const getMyFriends=Asynchandler(async(req,res)=>{
@@ -50,8 +51,9 @@ const getMyFriends=Asynchandler(async(req,res)=>{
             )
         )
     } catch (error) {
-        console.log("Error :: getMyFriends :: ",error);
-        throw new ApiError(500,"Internal server in getMyFriends")
+        res.status(500).json({
+            message:`${error.message}`
+        })
     }
 })
 
@@ -107,21 +109,22 @@ const sendFriendRequest=Asynchandler(async(req,res)=>{
             )
         )
     } catch (error) {
-        console.log("Error :: sendFriendRequest :: ",error);
-        throw new ApiError(500,"Internal server in sendFriendRequest")
+        res.status(500).json({
+            message:`${error.message}`
+        })
     }
 })
 
 const acceptFriendRequest=Asynchandler(async(req,res)=>{
     try {
-        const myId=req.user._id;
+        const myId=req.user?._id;
         const {id:requestId}=req.params;
 
         if(!(isValidObjectId(myId) || isValidObjectId(requestId))){
             throw new ApiError(401,"Unauthorized - Invalid yourId or requestId")
         }
      
-        const friendRequest=await FriendReq.findById(requestId);
+        const friendRequest=await FriendReq.findOne({sender:requestId,recipient:myId});
         if(!friendRequest){
             throw new ApiError(400,"friend request not found")
         }
@@ -162,8 +165,9 @@ const acceptFriendRequest=Asynchandler(async(req,res)=>{
             new Apiresponse(200,{},"friend request accepted")
         )
     } catch (error) {
-         console.log("Error :: acceptFriendRequest :: ",error);
-        throw new ApiError(500,"Internal server in acceptFriendRequest")
+        res.status(500).json({
+            message:`${error.message}`
+        })
     }
 })
 
@@ -186,8 +190,9 @@ const getFriendRequest=Asynchandler(async(req,res)=>{
             new Apiresponse(200,{incommingRequest,acceptedRequest},"notification fetched successfuly")
         )
     } catch (error) {
-        console.log("Error :: getFriendRequest :: ",error);
-        throw new ApiError(500,"Internal server in getFriendRequest")
+       res.status(500).json({
+            message:`${error.message}`
+        })
     }
 })
 
@@ -203,8 +208,9 @@ const getOutgoingFriendRequest=Asynchandler(async(req,res)=>{
             new Apiresponse(200,getOutgoing,"outgoing fetch successfuly")
         )
     } catch (error) {
-        console.log("Error :: getOutgoingFriendRequest :: ",error);
-        throw new ApiError(500,"Internal server in getOutgoingFriendRequest")
+        res.status(500).json({
+            message:`${error.message}`
+        })
     }
 })
 export{
