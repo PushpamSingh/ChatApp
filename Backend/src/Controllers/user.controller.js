@@ -27,9 +27,7 @@ const getRecommendedUsers=Asynchandler(async(req,res)=>{
         )
 
     } catch (error) {
-         res.status(500).json({
-            message:`${error.message}`
-        })
+       throw new ApiError(500,"Internal server error in getRecommended user")
     }
 })
 const getMyFriends=Asynchandler(async(req,res)=>{
@@ -51,9 +49,7 @@ const getMyFriends=Asynchandler(async(req,res)=>{
             )
         )
     } catch (error) {
-        res.status(500).json({
-            message:`${error.message}`
-        })
+        throw new ApiError(500,"Internal server error in getMyFriends")
     }
 })
 
@@ -109,9 +105,7 @@ const sendFriendRequest=Asynchandler(async(req,res)=>{
             )
         )
     } catch (error) {
-        res.status(500).json({
-            message:`${error.message}`
-        })
+        throw new ApiError(500,"Internal server error in sendFriendRequest")
     }
 })
 
@@ -165,9 +159,7 @@ const acceptFriendRequest=Asynchandler(async(req,res)=>{
             new Apiresponse(200,{},"friend request accepted")
         )
     } catch (error) {
-        res.status(500).json({
-            message:`${error.message}`
-        })
+       throw new ApiError(500,"Internal server error in acceptfriendRequest")
     }
 })
 
@@ -190,9 +182,7 @@ const getFriendRequest=Asynchandler(async(req,res)=>{
             new Apiresponse(200,{incommingRequest,acceptedRequest},"notification fetched successfuly")
         )
     } catch (error) {
-       res.status(500).json({
-            message:`${error.message}`
-        })
+      throw new ApiError(500,"Internal server error in getFriendRequest")
     }
 })
 
@@ -208,9 +198,7 @@ const getOutgoingFriendRequest=Asynchandler(async(req,res)=>{
             new Apiresponse(200,getOutgoing,"outgoing fetch successfuly")
         )
     } catch (error) {
-        res.status(500).json({
-            message:`${error.message}`
-        })
+       throw new ApiError(500,"Internal server error in getOutGoingFriendrequest")
     }
 })
 export{

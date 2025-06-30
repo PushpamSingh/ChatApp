@@ -7,7 +7,7 @@ dotenv.config()
 
 export const VerifyJWT=async(req,res,next)=>{
     try {
-        const token = req.cookies?.accessToken || req.headers?.authorization.replace("Bearer ","");
+        const token = req.cookies?.accessToken || req.headers?.authorization?.replace("Bearer ","");
 
         if(!token){
             throw new ApiError(401,"Unauthorized - Token not found")
@@ -25,10 +25,9 @@ export const VerifyJWT=async(req,res,next)=>{
         req.user=user;
         next()
     } catch (error) {
-        console.log("Error :: verifyJWT :: ",error);    
+        // console.log("Error :: verifyJWT :: ",error);    
         next(error)
-       res.status(200).json(
-        new Apiresponse(200,error)
-       )
+       throw new ApiError(500,"Internal server error in JWT")
+       
     }
 }
