@@ -10,6 +10,6 @@ export const connectDb=async()=>{
         console.log("Database connected successfully:: host :: ", connectInstace.connection.host)
     } catch (error) {
         console.error("Error connecting to the database:", error);
-        throw new ApiError("Database connection failed");
+        throw new ApiError(500,error?.message);
     }
 }

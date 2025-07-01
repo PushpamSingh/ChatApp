@@ -27,7 +27,9 @@ export const VerifyJWT=async(req,res,next)=>{
     } catch (error) {
         // console.log("Error :: verifyJWT :: ",error);    
         next(error)
-       throw new ApiError(500,"Internal server error in JWT")
+        res.status(500).json(
+             new ApiError(500,error?.message)
+        )
        
     }
 }

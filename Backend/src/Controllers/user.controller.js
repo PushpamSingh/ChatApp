@@ -27,7 +27,9 @@ const getRecommendedUsers=Asynchandler(async(req,res)=>{
         )
 
     } catch (error) {
-       throw new ApiError(500,"Internal server error in getRecommended user")
+        res.status(500).json(
+             new ApiError(500,error?.message)
+        )
     }
 })
 const getMyFriends=Asynchandler(async(req,res)=>{
@@ -49,7 +51,9 @@ const getMyFriends=Asynchandler(async(req,res)=>{
             )
         )
     } catch (error) {
-        throw new ApiError(500,"Internal server error in getMyFriends")
+         res.status(500).json(
+             new ApiError(500,error?.message)
+        )
     }
 })
 
@@ -105,7 +109,9 @@ const sendFriendRequest=Asynchandler(async(req,res)=>{
             )
         )
     } catch (error) {
-        throw new ApiError(500,"Internal server error in sendFriendRequest")
+         res.status(500).json(
+             new ApiError(500,error?.message)
+        )
     }
 })
 
@@ -159,7 +165,9 @@ const acceptFriendRequest=Asynchandler(async(req,res)=>{
             new Apiresponse(200,{},"friend request accepted")
         )
     } catch (error) {
-       throw new ApiError(500,"Internal server error in acceptfriendRequest")
+        res.status(500).json(
+             new ApiError(500,error?.message)
+        )
     }
 })
 
@@ -182,7 +190,9 @@ const getFriendRequest=Asynchandler(async(req,res)=>{
             new Apiresponse(200,{incommingRequest,acceptedRequest},"notification fetched successfuly")
         )
     } catch (error) {
-      throw new ApiError(500,"Internal server error in getFriendRequest")
+      res.status(500).json(
+             new ApiError(500,error?.message)
+        )
     }
 })
 
@@ -198,7 +208,9 @@ const getOutgoingFriendRequest=Asynchandler(async(req,res)=>{
             new Apiresponse(200,getOutgoing,"outgoing fetch successfuly")
         )
     } catch (error) {
-       throw new ApiError(500,"Internal server error in getOutGoingFriendrequest")
+       res.status(500).json(
+             new ApiError(500,error?.message)
+        )
     }
 })
 export{

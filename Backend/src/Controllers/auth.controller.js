@@ -79,7 +79,9 @@ const registerUser=Asynchandler(async(req,res)=>{
         )
 
     } catch (error) {
-       throw new ApiError(500,"Internal server error in register user")
+        res.status(500).json(
+             new ApiError(500,error?.message)
+        )
     }
 })
 
@@ -132,7 +134,9 @@ const login=Asynchandler(async(req,res)=>{
             )
         )
     } catch (error) {
-      throw new ApiError(500,"Internal server error in login")
+       res.status(500).json(
+             new ApiError(500,error?.message)
+        )
     }
 })
 
@@ -169,7 +173,9 @@ const logout=Asynchandler(async(req,res)=>{
             )
         )
     } catch (error) {
-       throw new ApiError(500,"Internal server error in logout")
+        res.status(500).json(
+             new ApiError(500,error?.message)
+        )
     }
 })
 
@@ -231,7 +237,9 @@ const onboard=Asynchandler(async(req,res)=>{
             new Apiresponse(200,updatedUser,"User updated successfuly")
         )
     } catch (error) {
-       throw new ApiError(500,"Internal server error in onboard")
+        res.status(500).json(
+             new ApiError(500,error?.message)
+        )
     }
 })
 
@@ -252,7 +260,9 @@ const getCurrentUser=Asynchandler(async(req,res)=>{
             )
         )
     } catch (error) {
-       throw new ApiError(500,"Internal server error in getting user")
+       res.status(500).json(
+             new ApiError(500,error?.message)
+        )
     }
 })
 
