@@ -44,9 +44,7 @@ const getMyFriends=Asynchandler(async(req,res)=>{
         .json(
             new Apiresponse(
                 200,
-                {
-                    friends:currentUser.friend
-                },
+                currentUser.friend,
                 "currentUser friend's fetch successfuly"
             )
         )
@@ -150,7 +148,7 @@ const acceptFriendRequest=Asynchandler(async(req,res)=>{
             }
         )
 
-        await User.findByIdAndUpdate(
+        const meuser= await User.findByIdAndUpdate(
             friendRequest.recipient,
             {
                 $addToSet:{friend:friendRequest.sender}
@@ -162,7 +160,7 @@ const acceptFriendRequest=Asynchandler(async(req,res)=>{
 
         return res.status(200)
         .json(
-            new Apiresponse(200,{},"friend request accepted")
+            new Apiresponse(200,meuser,"friend request accepted")
         )
     } catch (error) {
         res.status(500).json(

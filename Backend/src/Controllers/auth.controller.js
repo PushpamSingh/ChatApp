@@ -129,11 +129,13 @@ const login=Asynchandler(async(req,res)=>{
         .json(
             new Apiresponse(
                 200,
-                {user:user,accessToken,refreshToken,},
+                {user,refreshToken,accessToken},
                 "User login successfuly"
             )
         )
     } catch (error) {
+        // console.log("error in login :" ,error);
+        
        res.status(500).json(
              new ApiError(500,error?.message)
         )
@@ -146,7 +148,7 @@ const logout=Asynchandler(async(req,res)=>{
         if(!isValidObjectId(userId)){
             throw new ApiError(400,"Invalid action")
         }
-        await User.findByIdAndUpdate(
+        const logoutuser= await User.findByIdAndUpdate(
             userId,
             {
                 $set:{
@@ -162,13 +164,13 @@ const logout=Asynchandler(async(req,res)=>{
             secure:true,
             sameSite:'None'
         }
-        res.status(300)
+        res.status(200)
         .cookie('accessToken',option)
         .cookie('refreshToken',option)
         .json(
             new Apiresponse(
-                300,
-                {},
+                200,
+                logoutuser,
                 "User logout successfuly"
             )
         )
