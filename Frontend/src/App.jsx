@@ -1,41 +1,174 @@
-import { useQuery } from "@tanstack/react-query";
 import toast, {Toaster} from "react-hot-toast"
-import { Outlet, useNavigate } from "react-router-dom";
-// import axios from "axios"
-import authService from "./BackendService/Auth.Service";
-import { useDispatch } from "react-redux";
-import { login, logout } from "./Store/AuthSlice";
+import { createBrowserRouter, HashRouter, Navigate, Outlet, Route, RouterProvider, Routes, useNavigate } from "react-router-dom";
+// import Header from "./Components/Layout/Header";
+// import Footer from "./Components/Layout/Footer";
+import Homepage from "./Components/Pages/Homepage";
+import Loginpage from "./Components/Pages/Loginpage";
+import Signuppage from "./Components/Pages/Signuppage";
+import Onboardingpage from "./Components/Pages/Onboardingpage";
+import Notificationpage from "./Components/Pages/Notificationpage";
+import Callpage from "./Components/Pages/Callpage";
+import Chatpage from "./Components/Pages/Chatpage";
+import Layout from "./Components/Layout/Layout";
+import { useAuthUser } from "./Hooks/useAuthUser";
+import { PageLoader } from "./Components/PageLoader";
 function App() {
-  const navigate=useNavigate();
-  const dispatch=useDispatch();
-  const {data, isLoading, error, status}=useQuery({
-    queryKey:["user"],
-    queryFn:async()=>{
-      const res = await authService.getUserDetails();
-      if(res.data){
-        dispatch(login(res.data))
-        return res;
-      }else{
-        dispatch(logout())
-      }
-    },
-    retry:false
-  })
-  // console.log("Data: ",data);
-  // console.log("IsLoading: ",isLoading);
-  // console.log("Error: ",error);
-  // console.log("Status: ",status);
+  // const navigate=useNavigate();
+  // const dispatch=useDispatch();
   
-  return isLoading ? (
-      <div className="mx-autu flex w-full h-screen justify-center items-center">
-      <h1>loading...</h1>
-    </div>
-  ) :(
-    <h1 className="bg-white text-5xl h-screen ">
-      <Outlet/>
-    <Toaster/>
-    </h1>
+ const {authUserData,isLoading}=useAuthUser()
+const isAuthenticated=Boolean(authUserData);
+const isOnBoarded=authUserData?.isOnboarded
+
+// console.log("AuthUser: ",authUserData);
+
+// const router=createBrowserRouter([
+//   {
+//     path:"/",
+//     element:<Layout/>,
+//     children:[
+//       {
+//         path:'/',
+//         element:(
+//           isAuthenticated && isOnBoarded?
+//           (<Homepage/>)
+//           :<Navigate to={!isAuthenticated?"/login":"/onboarding"}/>
+//         )
+//       },
+//       {
+//         path:'/notification',
+//         element:(
+//             isAuthenticated && isOnBoarded?
+//             <Notificationpage/>
+//             :<Navigate to={!isAuthenticated? "/login" : "/onboarding"}/>
+//         )
+//       },
+//       {
+//         path:'/call/:id',
+//         element:(
+//             isAuthenticated && isOnBoarded?
+//             <Callpage/>
+//             :<Navigate to="/login"/>
+//         )
+//       },
+//       {
+//         path:'/chat/:id',
+//         element:(
+//             isAuthenticated && isOnBoarded?
+//             <Chatpage/>
+//             :<Navigate to="/login"/>
+//         )
+//       }
+//     ]
+//   },
+//    {
+//         path:'/login',
+//         element:(
+//             !isAuthenticated?
+//             <Loginpage/>
+//             :<Navigate to={!isOnBoarded?"/onboarding":"/"}/>
+//         )
+//       },
+//       {
+//         path:'/signup',
+//         element:(
+//             !isAuthenticated?
+//             <Signuppage/>
+//             :<Navigate to={!isOnBoarded?"/onboarding":"/"}/>
+//         )
+//       },
+//       {
+//         path:'/onboarding',
+//         element:(
+//             isAuthenticated?(
+//               !isOnBoarded?(
+//                 <Onboardingpage/>
+//               ):(<Navigate to="/"/>)
+//           )
+//             :<Navigate to="/login"/>
+//         )
+//       },
+// ])
+
+if(isLoading) return <PageLoader/>
+
+  return (
+    <HashRouter>
+   
+        <Routes>
+          <Route path="/" element={<Layout/>}>
+          <Route
+            path="/"
+            element={
+              isAuthenticated && isOnBoarded ? (
+                    <Homepage />
+                  
+              ) : (
+                <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
+              )
+            }
+          />
+          <Route
+            path="/notification"
+            element={
+              isAuthenticated && isOnBoarded ? (
+      
+                <Notificationpage />
+              ) : (
+                <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
+              )
+            }
+          />
+          <Route
+            path="/call/:id"
+            element={
+              isAuthenticated && isOnBoarded ? <Callpage /> : <Navigate to={!isAuthenticated ? "/login" : "/onboarding"}/>
+            }
+          />
+          <Route
+            path="/chat/:id"
+            element={
+              isAuthenticated && isOnBoarded ? <Chatpage />: <Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />
+            }
+          />
+
+          </Route>
+          <Route
+            path="/login"
+            element={
+              !isAuthenticated ? (
+                <Loginpage />
+              ) : (
+                <Navigate to={!isOnBoarded ? "/onboarding" : "/"} />
+              )
+            }
+          />
+          <Route
+            path="/signup"
+            element={
+              !isAuthenticated ? (
+                <Signuppage />
+              ) : (
+                <Navigate to={!isOnBoarded ? "/onboarding" : "/"} />
+              )
+            }
+          />
+          <Route
+            path="/onboarding"
+            element={
+              isAuthenticated ? (
+                !isOnBoarded ? <Onboardingpage /> : <Navigate to="/" />
+              ) : (
+                <Navigate to="/login" />
+              )
+            }
+          />
+        </Routes>
+      <Toaster />
+    </HashRouter>
+    
   )
+  
 }
 
 export default App;

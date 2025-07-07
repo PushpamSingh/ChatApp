@@ -119,8 +119,8 @@ const login=Asynchandler(async(req,res)=>{
         // }
         const option={
             httpOnly:true,
-            secure:true,
-            sameSite:'None'
+            secure:false,
+            sameSite:'Lax'
         }
 
         res.status(200)
@@ -161,8 +161,8 @@ const logout=Asynchandler(async(req,res)=>{
         )
         const option={
             httpOnly:true,
-            secure:true,
-            sameSite:'None'
+            secure:false,
+            sameSite:'Lax'
         }
         res.status(200)
         .cookie('accessToken',option)

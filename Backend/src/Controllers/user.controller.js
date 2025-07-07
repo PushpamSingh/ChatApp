@@ -122,7 +122,7 @@ const acceptFriendRequest=Asynchandler(async(req,res)=>{
             throw new ApiError(401,"Unauthorized - Invalid yourId or requestId")
         }
      
-        const friendRequest=await FriendReq.findOne({sender:requestId,recipient:myId});
+        const friendRequest=await FriendReq.findOne({_id:requestId});
         if(!friendRequest){
             throw new ApiError(400,"friend request not found")
         }
@@ -171,7 +171,7 @@ const acceptFriendRequest=Asynchandler(async(req,res)=>{
 
 const getFriendRequest=Asynchandler(async(req,res)=>{
     try {
-        const incommingRequest=await FriendReq.find(
+        const incomingRequest=await FriendReq.find(
             {
                 recipient:req.user?._id,
                 status:"pending"
@@ -185,7 +185,7 @@ const getFriendRequest=Asynchandler(async(req,res)=>{
 
         return res.status(200)
         .json(
-            new Apiresponse(200,{incommingRequest,acceptedRequest},"notification fetched successfuly")
+            new Apiresponse(200,{incomingRequest,acceptedRequest},"notification fetched successfuly")
         )
     } catch (error) {
       res.status(500).json(

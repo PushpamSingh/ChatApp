@@ -8,6 +8,8 @@ export const AuthLayOut=({children, authentication=true})=>{
     const [loader,setLoader]=useState(true);
     const authStatus=useSelector((state)=>state.authReducer.status);
 
+    // console.log("Auth Status: ",authStatus);
+    
     useEffect(()=>{
         //TODO: make it more easy to understand
         if(authentication && authStatus!==authentication){

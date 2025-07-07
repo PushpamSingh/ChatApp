@@ -10,12 +10,13 @@ class AuthService {
         try {
             const response = await API.post("/register", {fullname, email, password});
             if(response.data){
-                this.loginUser({email, password})
+              await this.loginUser({email, password})
             }else{
                 return response.data;
             }
-            return response.data;
         } catch (error) {
+            // console.log("error: ",error);
+            
             throw new Error(error.response?.data?.message || "Registration failed");
         }
     }
@@ -23,15 +24,19 @@ class AuthService {
     async loginUser({email, password}){
         try {
             const response = await API.post("/login", {email, password});
+            // console.log("Response: ",response);
+            
             return response.data;
         } catch (error) {
+            // console.log("Error in login: ",error);
+            
             throw new Error(error.response?.data?.message || "Login failed");
         }
     }
 
-    async onboardUser({fullname, bio, nativeLanguage, learningLanguage, location}){
+    async onboardUser({fullname, bio, nativeLanguage, learningLanguage, location,profilePic}){
         try {
-            const response = await API.post("/onboard", {fullname, bio, nativeLanguage, learningLanguage, location});
+            const response = await API.post("/onboard", {fullname, bio, nativeLanguage, learningLanguage, location,profilePic});
             if(response.data){  
             return response.data;
             }else{
@@ -44,22 +49,30 @@ class AuthService {
     async logoutUser(){
         try {
             const response = await API.post("/logout");
-            return response.data;
+            // console.log("Helo",response);
+            return response?.data || null;
         } catch (error) {
-            throw new Error(error.response?.data?.message || "Logout failed");
+            // console.log("error:",error);
+            return null
+            // throw new Error(error.response?.data?.message || "Logout failed");
         }
     }
 
     async getUserDetails(){
         try {
             const response = await API.get("/getcurrentuser");
-            if(response.data){
+            // console.log("Getcurrent user not null: ",response.data);
+            if(response){
+                // console.log("Getcurrent user not null: ",response.data);
                 return response.data;
             }else{
+                // console.log("Getcurrent user in null: ",response.data);
                 return null;
             }
         } catch (error) {
-            throw new Error(error.response?.data?.message || "Failed to fetch user details");
+            // console.log("Getcurrent user in error: ",error.response?.data?.data);
+            return error.response?.data?.data;
+            // throw new Error(error.response?.data?.message || "Failed to fetch user details");
         }
     }
 }
