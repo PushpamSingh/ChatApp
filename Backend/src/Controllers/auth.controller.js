@@ -119,8 +119,8 @@ const login=Asynchandler(async(req,res)=>{
         // }
         const option={
             httpOnly:true,
-            secure:false,
-            sameSite:'Lax'
+            secure:true,
+            sameSite:'None'
         }
 
         res.status(200)
@@ -161,12 +161,12 @@ const logout=Asynchandler(async(req,res)=>{
         )
         const option={
             httpOnly:true,
-            secure:false,
-            sameSite:'Lax'
+            secure:true,
+            sameSite:'None'
         }
         res.status(200)
-        .cookie('accessToken',option)
-        .cookie('refreshToken',option)
+        .clearCookie('accessToken',option)
+        .clearCookie('refreshToken',option)
         .json(
             new Apiresponse(
                 200,
